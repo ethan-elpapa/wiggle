@@ -119,8 +119,8 @@ module.exports = async (req, res) => {
       name: str(r.name), from: str(r.from), status: str(r.status)
     }));
 
-    /* 엣지 캐시: 5분간 캐시, 이후 24시간은 이전 응답을 먼저 주고 뒤에서 갱신 */
-    res.setHeader("Cache-Control", "s-maxage=300, stale-while-revalidate=86400");
+    /* 캐시 없음: 매 요청마다 시트를 새로 읽어 새로고침 즉시 최신값 반영 */
+    res.setHeader("Cache-Control", "no-store, max-age=0");
     res.setHeader("Content-Type", "application/json; charset=utf-8");
 
     return res.status(200).json({
