@@ -70,11 +70,34 @@ module.exports = async (req, res) => {
     sheet.LINKS.forEach(r => { links[str(r.key)] = str(r.url); });
 
     /* ---- KPI ---- */
-    const kpi = sheet.KPI.map(r => ({
-      label: str(r.label), value: str(r.value), baseline: str(r.baseline),
-      delta: Number(r.delta) || 0, unit: str(r.unit), note: str(r.note),
-      invert: bool(r.invert)
-    }));
+    /* 문자열("$1,000", "20%")에서 숫자만 추출 */
+    const parseNum = (x) => {
+      const n = Number(String(x ?? "").replace(/[^0-9.\-]/g, ""));
+      return isNaN(n) ? 0 : n;
+    };
+    const kpi = sheet.KPI.map(r => {
+      const unit = str(r.unit);
+      const value = str(r.value);
+      const baseline = str(r.baseline);
+      const v = parseNum(value), b = parseNum(baseline);
+
+      /* delta 자동 계산:
+         - delta 칸에 값을 직접 넣으면 그 값을 우선 사용
+         - 비었으면 value·baseline으로 자동 계산
+             · 단위가 % → 상대 변화율 (value-baseline)/baseline*100
+             · 그 외(%p, 개 등) → 단순 차이 value-baseline */
+      const manual = str(r.delta);
+      let delta;
+      if (manual !== "") {
+        delta = Number(manual) || 0;
+      } else if (unit === "%" && b !== 0) {
+        delta = Math.round((v - b) / b * 100);
+      } else {
+        delta = Math.round((v - b) * 100) / 100;
+      }
+
+      return { label: str(r.label), value, baseline, delta, unit, note: str(r.note), invert: bool(r.invert) };
+    });
 
     /* ---- TREND ---- */
     const revenueTrend = {
