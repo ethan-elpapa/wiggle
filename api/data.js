@@ -88,8 +88,8 @@ module.exports = async (req, res) => {
              · 그 외(%p, 개 등) → 단순 차이 value-baseline */
       const manual = str(r.delta);
       let delta;
-      if (manual !== "") {
-        delta = Number(manual) || 0;
+      if (manual !== "" && Number(manual) !== 0) {
+        delta = Number(manual);
       } else if (unit === "%" && b !== 0) {
         delta = Math.round((v - b) / b * 100);
       } else {
