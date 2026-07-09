@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wiggle Wiggle × Ethan — Amazon Growth</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+:root{
+  --ink:#1c1c1a; --ink-2:#5c5c56; --ink-3:#98988f;
+  --paper:#fbfaf6; --card:#ffffff; --line:#e8e6de; --line-2:#d6d4ca;
+  --wiggle:#00a94f; --wiggle-deep:#00713a; --wiggle-tint:#e5f6ec;
+  --sun:#ffc700; --sun-deep:#7a5b00; --sun-tint:#fff6d6;
+  --coral:#f5563f; --coral-deep:#a12c1b; --coral-tint:#fdeae7;
+  --blue:#2f6fdd; --blue-tint:#e9f0fc;
+  --radius:10px;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{
+  font-family:"Pretendard Variable",Pretendard,-apple-system,"Apple SD Gothic Neo",sans-serif;
+  background:var(--paper); color:var(--ink);
+  font-size:15px; line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+.num{font-variant-numeric:tabular-nums; letter-spacing:-0.01em;}
+
+header{
+  border-bottom:1px solid var(--line); background:var(--card);
+  position:sticky; top:0; z-index:50;
+}
+.header-inner{
+  max-width:1120px; margin:0 auto; padding:0 24px;
+  display:flex; align-items:center; gap:24px; height:60px;
+}
+.brand{display:flex; align-items:baseline; gap:10px; flex-shrink:0;}
+.brand .logo{font-weight:800; font-size:17px; letter-spacing:-0.02em;}
+.brand .logo em{font-style:normal; color:var(--wiggle);}
+.brand .sub{font-size:12px; color:var(--ink-3); font-weight:500;}
+nav{display:flex; gap:2px; margin-left:auto; overflow-x:auto;}
+nav button{
+  appearance:none; border:none; background:none; cursor:pointer;
+  font-family:inherit; font-size:14px; font-weight:600; color:var(--ink-2);
+  padding:8px 14px; border-radius:8px; white-space:nowrap;
+  transition:background .15s, color .15s;
+}
+nav button:hover{background:var(--paper);}
+nav button.active{background:var(--ink); color:#fff;}
+nav button:focus-visible{outline:2px solid var(--wiggle); outline-offset:2px;}
+
+main{max-width:1120px; margin:0 auto; padding:28px 24px 80px;}
+.tab{display:none;}
+.tab.show{display:block; animation:fade .25s ease;}
+@keyframes fade{from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;}}
+@media (prefers-reduced-motion: reduce){ .tab.show{animation:none;} }
+
+.section-label{
+  font-size:12px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+  color:var(--ink-3); margin:32px 0 12px;
+}
+.section-label:first-child{margin-top:0;}
+
+.pbdd-strip{
+  background:var(--sun); border-radius:14px; padding:18px 22px;
+  display:flex; align-items:center; gap:22px; flex-wrap:wrap;
+  margin-bottom:24px;
+}
+.pbdd-strip .dday{
+  font-size:34px; font-weight:800; letter-spacing:-0.03em; color:var(--ink); line-height:1; flex-shrink:0;
+}
+.pbdd-strip .dday small{display:block; font-size:12px; font-weight:700; letter-spacing:.06em; color:var(--sun-deep); margin-bottom:4px;}
+.pbdd-strip .bar-wrap{flex:1; min-width:220px;}
+.pbdd-strip .bar-label{display:flex; justify-content:space-between; font-size:13px; font-weight:600; color:var(--ink); margin-bottom:6px;}
+.pbdd-strip .bar{height:10px; background:rgba(255,255,255,.55); border-radius:5px; overflow:hidden;}
+.pbdd-strip .bar>div{height:100%; background:var(--ink); border-radius:5px; transition:width .4s ease;}
+.pbdd-strip .next{font-size:13px; color:var(--ink); max-width:280px;}
+.pbdd-strip .next b{display:block; font-size:12px; letter-spacing:.05em; color:var(--sun-deep); margin-bottom:2px;}
+
+.kpi-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px;}
+.kpi{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:16px 18px;}
+.kpi .k-label{font-size:13px; color:var(--ink-2); font-weight:600;}
+.kpi .k-value{font-size:27px; font-weight:800; letter-spacing:-0.02em; margin:4px 0 2px;}
+.kpi .k-delta{font-size:12.5px; font-weight:600;}
+.kpi .k-delta.up{color:var(--wiggle-deep);}
+.kpi .k-delta.down{color:var(--coral-deep);}
+.kpi .k-delta.flat{color:var(--ink-3);}
+
+.card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:18px 20px;}
+.grid-2{display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:14px;}
+.card h3{font-size:15px; font-weight:700; margin-bottom:12px; display:flex; align-items:center; gap:8px;}
+.card h3 .dot{width:8px; height:8px; border-radius:50%; flex-shrink:0;}
+.chart-box{position:relative; height:230px;}
+
+table{width:100%; border-collapse:collapse; font-size:13.5px;}
+th{
+  text-align:left; font-size:12px; font-weight:700; letter-spacing:.04em;
+  color:var(--ink-3); padding:8px 10px; border-bottom:1px solid var(--line-2); white-space:nowrap;
+}
+td{padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+.table-scroll{overflow-x:auto;}
+
+.badge{display:inline-block; font-size:12px; font-weight:700; padding:2px 10px; border-radius:999px; white-space:nowrap;}
+.badge.green{background:var(--wiggle-tint); color:var(--wiggle-deep);}
+.badge.yellow{background:var(--sun-tint); color:var(--sun-deep);}
+.badge.coral{background:var(--coral-tint); color:var(--coral-deep);}
+.badge.blue{background:var(--blue-tint); color:var(--blue);}
+.badge.gray{background:#f0efe9; color:var(--ink-2);}
+
+.item-list{list-style:none;}
+.item-list li{
+  display:flex; align-items:flex-start; gap:10px; padding:8px 0;
+  border-bottom:1px solid var(--line); font-size:13.5px;
+}
+.item-list li:last-child{border-bottom:none;}
+.item-list .tag{flex-shrink:0; margin-top:1px;}
+.decision-card{border-left:4px solid var(--sun); border-radius:0 var(--radius) var(--radius) 0;}
+
+.phase{margin-bottom:18px;}
+.phase-head{display:flex; align-items:center; gap:10px; margin-bottom:8px;}
+.phase-head .month{font-size:13px; font-weight:800; background:var(--ink); color:#fff; padding:2px 10px; border-radius:6px;}
+.phase-head .title{font-size:14px; font-weight:700;}
+.phase-head .count{font-size:12.5px; color:var(--ink-3); margin-left:auto;}
+.check-list{list-style:none;}
+.check-list li{
+  display:flex; align-items:flex-start; gap:10px; padding:7px 0 7px 4px;
+  font-size:13.5px; border-bottom:1px solid var(--line);
+}
+.check-list li:last-child{border-bottom:none;}
+.check-list .box{
+  width:18px; height:18px; border-radius:5px; border:2px solid var(--line-2);
+  flex-shrink:0; margin-top:2px; display:flex; align-items:center; justify-content:center;
+}
+.check-list li.done .box{background:var(--wiggle); border-color:var(--wiggle);}
+.check-list li.done .box::after{content:"✓"; color:#fff; font-size:12px; font-weight:800; line-height:1;}
+.check-list li.done .txt{color:var(--ink-3); text-decoration:line-through;}
+.check-list li.urgent .txt{font-weight:700;}
+.check-list li.urgent .txt::after{content:" ★긴급"; color:var(--coral); font-size:12px;}
+
+.week-row td:first-child{font-weight:800; white-space:nowrap;}
+.progress-mini{height:8px; background:#f0efe9; border-radius:4px; overflow:hidden; margin-top:6px;}
+.progress-mini>div{height:100%; background:var(--wiggle); border-radius:4px;}
+
+/* ---------- notion links (하이라이트) ---------- */
+a.notion-link{
+  display:inline-flex; align-items:center; gap:5px;
+  font-size:12.5px; font-weight:700; color:var(--wiggle-deep);
+  text-decoration:none; padding:4px 12px;
+  border:1.5px solid var(--wiggle); border-radius:999px;
+  background:var(--wiggle-tint); white-space:nowrap;
+  transition:background .15s, color .15s;
+}
+a.notion-link::before{
+  content:"N"; font-size:10px; font-weight:800; line-height:1;
+  background:var(--wiggle); color:#fff; border-radius:4px;
+  width:15px; height:15px; display:inline-flex;
+  align-items:center; justify-content:center; flex-shrink:0;
+}
+a.notion-link:hover{background:var(--wiggle); color:#fff;}
+a.notion-link:hover::before{background:#fff; color:var(--wiggle-deep);}
+a.notion-link:focus-visible{outline:2px solid var(--wiggle); outline-offset:2px;}
+a.notion-link .arrow{font-size:11px;}
+a.notion-link.header-btn{margin-left:8px;}
+.label-row{
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px; margin:32px 0 12px;
+}
+.label-row:first-child{margin-top:0;}
+.label-row .section-label{margin:0;}
+
+footer{max-width:1120px; margin:0 auto; padding:0 24px 40px; font-size:12px; color:var(--ink-3);}
+@media (max-width:640px){
+  .header-inner{padding:0 14px; gap:10px;}
+  .brand .sub{display:none;}
+  main{padding:20px 14px 60px;}
+  .pbdd-strip{gap:14px; padding:16px;}
+  .pbdd-strip .dday{font-size:28px;}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <span class="logo">WIGGLE<em>×</em>ETHAN</span>
+      <span class="sub">Amazon Growth Program</span>
+    </div>
+    <nav id="nav">
+      <button data-tab="exec" class="active">경영 요약</button>
+      <button data-tab="pbdd">PBDD 워룸</button>
+      <button data-tab="ops">대행 트랙</button>
+      <button data-tab="edu">교육 트랙</button>
+    </nav>
+    <span id="header-notion"></span>
+  </div>
+</header>
+
+<main>
+  <div id="tab-exec" class="tab show"></div>
+  <div id="tab-pbdd" class="tab"></div>
+  <div id="tab-ops" class="tab"></div>
+  <div id="tab-edu" class="tab"></div>
+</main>
+
+<footer id="foot"></footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+/* =====================================================================
+   ★ 매주 업데이트는 아래 DATA 객체만 수정하면 됩니다 ★
+   지금 들어있는 수치는 6주차 기준 [예시 데이터]입니다.
+   실제 운영 시작 시 W1 기준의 실제 수치로 교체하세요.
+
+   Google Sheets 연동 시: Apps Script doGet()으로 같은 구조의 JSON을
+   반환하게 하고, 맨 아래 DATA_URL에 웹앱 URL을 넣으세요.
+   ===================================================================== */
+const DATA = {
+  meta: {
+    week: 6,
+    updated: "2026-08-14",
+    phase: "Phase 2 · 실행 & 시스템 구축",
+    pbddDate: "2026-10-06",     // PBDD 예상일 (공식 발표 시 수정)
+    pbddConfirmed: false
+  },
+
+  /* ---- 노션 링크: 각 노션 페이지의 공유 URL을 붙여넣으세요.
+          비워두면("") 해당 버튼은 자동으로 숨겨집니다. ---- */
+  links: {
+    home:      "",   // 노션 메인 워크스페이스 (헤더 버튼)
+    reports:   "",   // 주간 보고 아카이브
+    pbdd:      "",   // PBDD 워룸 페이지
+    ops:       "",   // 대행 트랙 — 실행 로그 DB
+    edu:       "",   // 교육 트랙 — 커리큘럼 DB
+    sop:       "",   // SOP 라이브러리
+    decisions: ""    // 회의록 & 의사결정 로그
+  },
+
+  kpi: [
+    { label:"주간 매출",  value:"$18,420", baseline:"$14,950", delta:23.2, unit:"%",  note:"" },
+    { label:"TACOS",     value:"14.2%",   baseline:"17.8%",   delta:-3.6, unit:"%p", note:"", invert:true },
+    { label:"전환율",     value:"11.8%",   baseline:"9.7%",    delta:2.1,  unit:"%p", note:"" },
+    { label:"누적 리뷰",   value:"1,284",   baseline:"1,188",   delta:96,   unit:"개",  note:"평점 4.6" }
+  ],
+
+  revenueTrend: {
+    labels: ["W0", "W1", "W2", "W3", "W4", "W5", "W6"],
+    values: [14950, 15100, 15620, 16240, 17080, 17810, 18420]
+  },
+
+  pbdd: {
+    deals: [
+      { asin:"B0WGGL0001", name:"스마일 그립톡 3종 세트", type:"Best Deal", price:"$11.99", qty:"1,200", status:"제출 완료" },
+      { asin:"B0WGGL0002", name:"플라워 블랭킷 (선물 박스)", type:"Lightning Deal", price:"$27.99", qty:"800", status:"제출 완료" },
+      { asin:"B0WGGL0003", name:"패턴 파우치 2팩", type:"Prime Exclusive", price:"$13.49", qty:"1,000", status:"검토 중" },
+      { asin:"B0WGGL0004", name:"스마일 우산 (컴팩트)", type:"Best Deal", price:"$16.99", qty:"600", status:"후보 검토" }
+    ],
+    phases: [
+      { month:"7월", title:"딜 대상 확정 & 재고 발주", items:[
+        { t:"PBDD 주력 ASIN 3~5개 선정 (선물성 우선)", done:true, urgent:true },
+        { t:"재고 발주·선적 — 7월 말 데드라인 (리드타임 6~8주 역산)", done:true, urgent:true },
+        { t:"딜 수량 산정: 평시 3~5배 + 후광기간 재고", done:true },
+        { t:"딜 제출 오픈 공지 모니터링 시작", done:true }
+      ]},
+      { month:"8월", title:"딜 제출 & 가격 규율", items:[
+        { t:"LD / Best Deal / PED 제출 (공지 즉시)", done:true },
+        { t:"60일 가격 룰 관리 — 쿠폰·할인 통제", done:false, urgent:true },
+        { t:"주력 ASIN 리스팅·A+·메인이미지 정비", done:false },
+        { t:"리뷰 velocity 점검 (Vine, 리뷰 요청)", done:false }
+      ]},
+      { month:"9월", title:"입고 확인 & 광고 램프업", items:[
+        { t:"FBA 입고 완료 확인 + Needs Action 체크", done:false },
+        { t:"광고 예산 점진 증액, 키워드 노출 점유 확보", done:false },
+        { t:"광고 예산 자동 증액 룰 세팅", done:false },
+        { t:"브랜드 스토어 딜 페이지 구성", done:false }
+      ]},
+      { month:"10월", title:"행사 실행 & 후광", items:[
+        { t:"데일리 모니터링: 딜 진행률·광고·재고·Buy Box", done:false },
+        { t:"행사 후 1~2주 후광기간 광고 유지", done:false },
+        { t:"PBDD 성과 리포트 작성 → 재계약 논의", done:false }
+      ]}
+    ]
+  },
+
+  focus: {
+    ops: [
+      { t:"PPC 검색어 하베스팅 2차 — Exact 캠페인 분리", status:"진행" },
+      { t:"블랭킷 ASIN A+ 리뉴얼 (선물 컨셉 강화)", status:"완료" },
+      { t:"60일 가격 룰 기준 프로모션 캘린더 조정", status:"진행" }
+    ],
+    edu: [
+      { t:"6주차 교육: PPC 운영 실무 — 하베스팅·네거티브·입찰", status:"완료" },
+      { t:"담당자 숙제: 주간 광고 점검 루틴 1회차 수행", status:"진행" }
+    ]
+  },
+
+  decisions: [
+    { t:"PBDD Lightning Deal 예산 $3,000 승인", due:"8/21", detail:"블랭킷 LD 슬롯 확정을 위해 이번 주 내 승인 필요" },
+    { t:"파우치 2팩 딜 가격 최종 확정 ($13.49 vs $12.99)", due:"8/25", detail:"60일 최저가 $13.75 기준, 마진 시뮬레이션 첨부" }
+  ],
+
+  opsLog: [
+    { week:"W6", cat:"광고", item:"검색어 하베스팅 2차 — 전환 검증 키워드 18개 Exact 분리", result:"진행 중", status:"진행" },
+    { week:"W6", cat:"PBDD", item:"블랭킷·그립톡 딜 제출 완료", result:"LD·BD 슬롯 확보", status:"완료" },
+    { week:"W5", cat:"리스팅", item:"블랭킷 A+ 리뉴얼 — 선물 컨셉 모듈 추가", result:"전환율 10.9% → 12.4%", status:"완료" },
+    { week:"W5", cat:"광고", item:"낭비 검색어 42개 네거티브 처리", result:"주간 광고비 $186 절감", status:"완료" },
+    { week:"W4", cat:"재고", item:"PBDD 물량 선적 완료 (해상, ETA 9/8)", result:"딜 수량 100% 커버", status:"완료" },
+    { week:"W3", cat:"광고", item:"캠페인 구조 재설계 — 포트폴리오 3개 체계로 통합", result:"ACOS 24.1% → 19.8%", status:"완료" },
+    { week:"W2", cat:"리스팅", item:"그립톡 타이틀·백엔드 키워드 재작성", result:"세션 +18%", status:"완료" },
+    { week:"W1", cat:"진단", item:"Baseline 확정 & 진단 리포트 제출", result:"90일 로드맵 승인", status:"완료" }
+  ],
+
+  curriculum: [
+    { w:1,  topic:"계정 구조 & Seller Central / 진단 공유 / PBDD 목표", hw:"주력 ASIN 5개 현황표", status:"완료" },
+    { w:2,  topic:"키워드 리서치 & 리스팅 최적화", hw:"리스팅 개선안 1건", status:"완료" },
+    { w:3,  topic:"프로모션 & 딜 메커니즘 (60일 가격 룰, 딜 수량)", hw:"딜 제출 준비표", status:"완료" },
+    { w:4,  topic:"FBA 재고 관리 & 행사 수요 예측", hw:"재고 알림 기준선", status:"완료" },
+    { w:5,  topic:"PPC 구조 설계 (SP/SB/SD)", hw:"캠페인 네이밍 규칙", status:"완료" },
+    { w:6,  topic:"PPC 운영 실무 — 하베스팅·네거티브·입찰", hw:"주간 광고 점검 루틴", status:"진행" },
+    { w:7,  topic:"Brand Analytics & SQP", hw:"상위 10 키워드 추적표", status:"예정" },
+    { w:8,  topic:"A+ & 브랜드 스토어 + 행사 딜 페이지", hw:"딜 페이지 브리프", status:"예정" },
+    { w:9,  topic:"PBDD 램프업 — 광고 증액·예산 룰", hw:"행사 D-데이 체크리스트", status:"예정" },
+    { w:10, topic:"PBDD 실전 운영 — 데일리 모니터링", hw:"데일리 리포트", status:"예정" },
+    { w:11, topic:"행사 리뷰 & 후광 운영 / 계정 헬스", hw:"행사 회고 리포트", status:"예정" },
+    { w:12, topic:"종합 발표 — 담당자가 대표 앞에서 성과 발표", hw:"-", status:"예정" }
+  ],
+
+  sop: [
+    { name:"딜 운영 가이드 (60일 가격 룰 포함)", from:"3주차 숙제", status:"완료" },
+    { name:"재고 알림 기준선 & 발주 역산표", from:"4주차 숙제", status:"완료" },
+    { name:"캠페인 네이밍 규칙", from:"5주차 숙제", status:"완료" },
+    { name:"광고 주간 점검 루틴", from:"6주차 숙제", status:"진행" },
+    { name:"행사 D-데이 체크리스트", from:"9주차 예정", status:"예정" }
+  ]
+};
+
+/* Google Sheets 연동 시 Apps Script 웹앱 URL 입력 (비우면 위 DATA 사용) */
+const DATA_URL = "/api/data";
+
+/* =====================================================================
+   이하 렌더링 로직 — 수정 불필요
+   ===================================================================== */
+const statusBadge = (s) => {
+  const map = { "완료":"green", "진행":"blue", "예정":"gray", "지연":"coral",
+                "후보 검토":"yellow", "검토 중":"yellow", "제출 완료":"green" };
+  return `<span class="badge ${map[s] || "gray"}">${s}</span>`;
+};
+
+const notionBtn = (url, label) => url
+  ? `<a class="notion-link" href="${url}" target="_blank" rel="noopener">${label}<span class="arrow">↗</span></a>`
+  : "";
+
+const labelRow = (title, url, linkLabel) => `
+  <div class="label-row">
+    <div class="section-label">${title}</div>
+    ${notionBtn(url, linkLabel || "노션에서 상세 보기")}
+  </div>`;
+const catBadge = (c) => {
+  const map = { "광고":"blue", "리스팅":"green", "재고":"yellow", "PBDD":"coral", "진단":"gray", "교육":"green" };
+  return `<span class="badge ${map[c] || "gray"}">${c}</span>`;
+};
+
+function deltaHtml(k){
+  if(k.delta === 0) return `<div class="k-delta flat">— ${k.note || "Baseline 대비 0" + k.unit}</div>`;
+  const good = k.invert ? k.delta < 0 : k.delta > 0;
+  const sign = k.delta > 0 ? "+" : "";
+  return `<div class="k-delta ${good ? "up" : "down"}">${sign}${k.delta}${k.unit} vs Baseline${k.note ? " · " + k.note : ""}</div>`;
+}
+
+function pbddProgress(d){
+  let total = 0, done = 0;
+  d.pbdd.phases.forEach(p => p.items.forEach(i => { total++; if(i.done) done++; }));
+  return { total, done, pct: total ? Math.round(done/total*100) : 0 };
+}
+
+function dday(dateStr){
+  const target = new Date(dateStr + "T00:00:00");
+  const today = new Date(); today.setHours(0,0,0,0);
+  return Math.ceil((target - today) / 86400000);
+}
+
+function nextActions(d, n){
+  const out = [];
+  for(const p of d.pbdd.phases){
+    for(const i of p.items){
+      if(!i.done) out.push({ month:p.month, t:i.t, urgent:i.urgent });
+      if(out.length >= n) return out;
+    }
+  }
+  return out;
+}
+
+let revChartInstance = null;
+
+function renderExec(d){
+  const prog = pbddProgress(d);
+  const dd = dday(d.meta.pbddDate);
+  const next = nextActions(d, 1)[0];
+
+  const kpis = d.kpi.map(k => `
+    <div class="kpi">
+      <div class="k-label">${k.label}</div>
+      <div class="k-value num">${k.value}</div>
+      ${deltaHtml(k)}
+    </div>`).join("");
+
+  const focusOps = d.focus.ops.map(f => `
+    <li><span class="tag">${statusBadge(f.status)}</span><span>${f.t}</span></li>`).join("");
+  const focusEdu = d.focus.edu.map(f => `
+    <li><span class="tag">${statusBadge(f.status)}</span><span>${f.t}</span></li>`).join("");
+
+  const decisions = d.decisions.length ? d.decisions.map(x => `
+    <li><span class="tag"><span class="badge yellow">마감 ${x.due}</span></span>
+        <span><b>${x.t}</b><br><span style="color:var(--ink-2); font-size:12.5px;">${x.detail}</span></span></li>`).join("")
+    : `<li><span style="color:var(--ink-3);">대기 중인 의사결정이 없습니다.</span></li>`;
+
+  document.getElementById("tab-exec").innerHTML = `
+    <div class="pbdd-strip">
+      <div class="dday num"><small>PRIME BIG DEAL DAYS${d.meta.pbddConfirmed ? "" : " (예상)"}</small>D-${dd}</div>
+      <div class="bar-wrap">
+        <div class="bar-label"><span>준비 진척률</span><span class="num">${prog.done}/${prog.total} · ${prog.pct}%</span></div>
+        <div class="bar"><div style="width:${prog.pct}%"></div></div>
+      </div>
+      ${next ? `<div class="next"><b>NEXT (${next.month})</b>${next.t}</div>` : ""}
+    </div>
+
+    <div class="label-row">
+      <div class="section-label">핵심 지표 — W${d.meta.week} · ${d.meta.phase}</div>
+      ${notionBtn(d.links.reports, "주간 보고 아카이브")}
+    </div>
+    <div class="kpi-grid">${kpis}</div>
+
+    <div class="section-label">주간 매출 추이</div>
+    <div class="card"><div class="chart-box"><canvas id="revChart"></canvas></div></div>
+
+    <div class="section-label">이번 주 프로그램 현황</div>
+    <div class="grid-2">
+      <div class="card">
+        <h3><span class="dot" style="background:var(--wiggle)"></span>대행 트랙
+            <span style="margin-left:auto;">${notionBtn(d.links.ops, "실행 로그")}</span></h3>
+        <ul class="item-list">${focusOps}</ul>
+      </div>
+      <div class="card">
+        <h3><span class="dot" style="background:var(--sun)"></span>교육 트랙
+            <span style="margin-left:auto;">${notionBtn(d.links.edu, "커리큘럼")}</span></h3>
+        <ul class="item-list">${focusEdu}</ul>
+      </div>
+    </div>
+
+    <div class="label-row">
+      <div class="section-label">의사결정 필요</div>
+      ${notionBtn(d.links.decisions, "회의록 & 결정 로그")}
+    </div>
+    <div class="card decision-card">
+      <ul class="item-list">${decisions}</ul>
+    </div>`;
+
+  if(revChartInstance) revChartInstance.destroy();
+  revChartInstance = new Chart(document.getElementById("revChart"), {
+    type: "line",
+    data: {
+      labels: d.revenueTrend.labels,
+      datasets: [{
+        data: d.revenueTrend.values,
+        borderColor: "#00a94f",
+        backgroundColor: "rgba(0,169,79,0.08)",
+        fill: true, tension: 0.3, pointRadius: 4,
+        pointBackgroundColor: "#00a94f", borderWidth: 2.5
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: {
+        label: c => " $" + c.parsed.y.toLocaleString()
+      }}},
+      scales: {
+        y: { ticks: { color: "#98988f", callback: v => "$" + (v/1000).toFixed(1) + "k" },
+             grid: { color: "#f0efe9" } },
+        x: { ticks: { color: "#98988f" }, grid: { display: false } }
+      }
+    }
+  });
+}
+
+function renderPbdd(d){
+  const prog = pbddProgress(d);
+  const dd = dday(d.meta.pbddDate);
+
+  const phases = d.pbdd.phases.map(p => {
+    const doneCount = p.items.filter(i => i.done).length;
+    const items = p.items.map(i => `
+      <li class="${i.done ? "done" : ""} ${i.urgent && !i.done ? "urgent" : ""}">
+        <span class="box"></span><span class="txt">${i.t}</span>
+      </li>`).join("");
+    return `
+      <div class="phase card">
+        <div class="phase-head">
+          <span class="month">${p.month}</span>
+          <span class="title">${p.title}</span>
+          <span class="count num">${doneCount}/${p.items.length}</span>
+        </div>
+        <ul class="check-list">${items}</ul>
+      </div>`;
+  }).join("");
+
+  const deals = d.pbdd.deals.map(x => `
+    <tr>
+      <td>${x.name}<br><span style="color:var(--ink-3); font-size:12px;" class="num">${x.asin}</span></td>
+      <td>${x.type}</td>
+      <td class="num">${x.price}</td>
+      <td class="num">${x.qty}</td>
+      <td>${statusBadge(x.status)}</td>
+    </tr>`).join("");
+
+  document.getElementById("tab-pbdd").innerHTML = `
+    <div class="pbdd-strip">
+      <div class="dday num"><small>PRIME BIG DEAL DAYS${d.meta.pbddConfirmed ? "" : " (예상)"}</small>D-${dd}</div>
+      <div class="bar-wrap">
+        <div class="bar-label"><span>전체 진척률</span><span class="num">${prog.done}/${prog.total} · ${prog.pct}%</span></div>
+        <div class="bar"><div style="width:${prog.pct}%"></div></div>
+      </div>
+      <div class="next"><b>기준일</b>${d.meta.pbddDate}${d.meta.pbddConfirmed ? " (확정)" : " — 공식 발표 시 수정"}</div>
+    </div>
+
+    <div class="label-row">
+      <div class="section-label">딜 제출 현황</div>
+      ${notionBtn(d.links.pbdd, "PBDD 워룸 (노션)")}
+    </div>
+    <div class="card table-scroll">
+      <table>
+        <thead><tr><th>제품</th><th>딜 유형</th><th>딜 가격</th><th>수량</th><th>상태</th></tr></thead>
+        <tbody>${deals}</tbody>
+      </table>
+    </div>
+
+    <div class="section-label">마스터 타임라인</div>
+    ${phases}`;
+}
+
+function renderOps(d){
+  const rows = d.opsLog.map(x => `
+    <tr>
+      <td class="num" style="font-weight:800;">${x.week}</td>
+      <td>${catBadge(x.cat)}</td>
+      <td>${x.item}</td>
+      <td>${x.result}</td>
+      <td>${statusBadge(x.status)}</td>
+    </tr>`).join("");
+
+  document.getElementById("tab-ops").innerHTML = `
+    <div class="label-row">
+      <div class="section-label">주간 실행 로그</div>
+      ${notionBtn(d.links.ops, "노션 실행 로그 DB")}
+    </div>
+    <div class="card table-scroll">
+      <table>
+        <thead><tr><th>주차</th><th>분류</th><th>실행 항목</th><th>결과</th><th>상태</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <p style="font-size:12.5px; color:var(--ink-3); margin-top:10px;">
+      결과 칸에는 수치를 기록하세요. 숫자가 쌓이면 그대로 재계약 근거가 됩니다.
+    </p>`;
+}
+
+function renderEdu(d){
+  const doneCount = d.curriculum.filter(c => c.status === "완료").length;
+  const pct = Math.round(doneCount / d.curriculum.length * 100);
+
+  const rows = d.curriculum.map(c => `
+    <tr class="week-row">
+      <td class="num">W${c.w}</td>
+      <td>${c.topic}</td>
+      <td style="color:var(--ink-2);">${c.hw}</td>
+      <td>${statusBadge(c.status)}</td>
+    </tr>`).join("");
+
+  const sops = d.sop.map(s => `
+    <li><span class="tag">${statusBadge(s.status)}</span>
+        <span><b>${s.name}</b> <span style="color:var(--ink-3); font-size:12.5px;">— ${s.from}</span></span></li>`).join("");
+
+  document.getElementById("tab-edu").innerHTML = `
+    <div class="label-row">
+      <div class="section-label">12주 커리큘럼 — 진행 ${doneCount}/12</div>
+      ${notionBtn(d.links.edu, "노션 커리큘럼 DB")}
+    </div>
+    <div class="card">
+      <div class="progress-mini" style="margin:0 0 14px;"><div style="width:${pct}%"></div></div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>주차</th><th>주제</th><th>숙제 (→ SOP)</th><th>상태</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="label-row">
+      <div class="section-label">SOP 라이브러리 (교육 산출물)</div>
+      ${notionBtn(d.links.sop, "노션 SOP 라이브러리")}
+    </div>
+    <div class="card">
+      <ul class="item-list">${sops}</ul>
+    </div>`;
+}
+
+function renderAll(d){
+  renderExec(d);
+  renderPbdd(d);
+  renderOps(d);
+  renderEdu(d);
+  document.getElementById("header-notion").innerHTML =
+    d.links.home ? notionBtn(d.links.home, "노션").replace('class="notion-link"','class="notion-link header-btn"') : "";
+  document.getElementById("foot").innerHTML =
+    `W${d.meta.week} · 업데이트 ${d.meta.updated} · Wiggle Wiggle × Ethan Amazon Growth Program<span id="sync-status"></span>`;
+}
+
+document.getElementById("nav").addEventListener("click", e => {
+  const btn = e.target.closest("button[data-tab]");
+  if(!btn) return;
+  document.querySelectorAll("#nav button").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("show"));
+  document.getElementById("tab-" + btn.dataset.tab).classList.add("show");
+});
+
+/* ---- 로딩 전략: 캐시/내장 데이터를 즉시 표시하고, 시트 데이터는 뒤에서 동기화 ---- */
+const CACHE_KEY = "ww-dash-cache-v1";
+
+function setSyncStatus(txt){
+  const el = document.getElementById("sync-status");
+  if(el) el.textContent = txt;
+}
+
+(function init(){
+  // 1) 즉시 렌더: 마지막 동기화 캐시가 있으면 그걸, 없으면 내장 DATA
+  let d = DATA;
+  try {
+    const cached = localStorage.getItem(CACHE_KEY);
+    if (cached) d = JSON.parse(cached);
+  } catch(e){ /* 캐시 손상 시 내장 DATA 사용 */ }
+  renderAll(d);
+
+  // 2) 백그라운드 동기화: DATA_URL이 설정된 경우에만
+  if (DATA_URL) {
+    setSyncStatus(" · 시트 동기화 중…");
+    fetch(DATA_URL)
+      .then(r => { if(!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(fresh => {
+        try { localStorage.setItem(CACHE_KEY, JSON.stringify(fresh)); } catch(e){}
+        renderAll(fresh);
+        setSyncStatus(" · 시트 동기화 완료 ✓");
+      })
+      .catch(err => {
+        console.warn("시트 동기화 실패 — 캐시/내장 데이터 유지", err);
+        setSyncStatus(" · 동기화 실패 (이전 데이터 표시 중)");
+      });
+  }
+})();
+</script>
+</body>
+</html>
