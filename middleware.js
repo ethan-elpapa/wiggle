@@ -14,8 +14,9 @@ export const config = {
 };
 
 export default function middleware(request) {
-  const expectedUser = process.env.BASIC_AUTH_USER;
-  const expectedPass = process.env.BASIC_AUTH_PASS;
+  // 환경변수에 실수로 붙은 앞뒤 공백/줄바꿈 제거
+  const expectedUser = (process.env.BASIC_AUTH_USER || "").trim();
+  const expectedPass = (process.env.BASIC_AUTH_PASS || "").trim();
 
   // 환경 변수 미설정 시엔 잠그지 않고 통과 (설정 전 잠김 방지)
   if (!expectedUser || !expectedPass) return next();
@@ -26,8 +27,8 @@ export default function middleware(request) {
     if (scheme === "Basic" && encoded) {
       const decoded = atob(encoded);
       const idx = decoded.indexOf(":");
-      const user = decoded.slice(0, idx);
-      const pass = decoded.slice(idx + 1);
+      const user = decoded.slice(0, idx).trim();
+      const pass = decoded.slice(idx + 1).trim();
       if (user === expectedUser && pass === expectedPass) {
         return next();
       }
